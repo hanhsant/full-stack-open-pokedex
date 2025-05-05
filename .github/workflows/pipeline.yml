@@ -26,7 +26,7 @@ jobs:
         - name: commit messages
           env:
            COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-           CONDITION: ${{ contains(COMMIT_MESSAGES, '#skip')}}
+           CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
           run: echo "$COMMIT_MESSAGES"
         - name: Install dependencies
           run: npm install
