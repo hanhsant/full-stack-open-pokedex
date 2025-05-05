@@ -27,8 +27,10 @@ jobs:
           env:
            COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
            CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
-        - if: ${{ env.CONDITION == 'false' }}
+        - if: ${{ env.CONDITION == 'true' }}
           run: echo 'this step is executed'
+        - if: ${{ env.CONDITION == 'false' }}
+          run: echo 'this step will not be executed'
         - name: Install dependencies
           run: npm install
         - name: Check style
