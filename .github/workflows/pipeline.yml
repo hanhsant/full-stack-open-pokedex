@@ -45,7 +45,9 @@ jobs:
         - name: Run Playwright tests
           run: npm run test:e2e
         - name: Trigger deployment
-  
+          env:
+           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+           CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
           if: ${{github.event_name == 'push' && env.CONDITION == 'false'}}
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
   tag_release:
@@ -57,11 +59,14 @@ jobs:
          with:
             node-version: '20'
        - name: Bump version and push tag
+         env:
+           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+           CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           DEFAULT_BUMP: patch
          if: ${{github.event_name == 'push' && env.CONDITION == 'false'}}
          uses: anothrNick/github-tag-action@1.71.0
-         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            DEFAULT_BUMP: patch
+         
     
        
         
