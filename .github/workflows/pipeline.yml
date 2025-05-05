@@ -15,6 +15,19 @@ jobs:
         - uses: actions/setup-node@v4
           with:
             node-version: '20'
+        - name: github context
+          env:
+           GITHUB_CONTEXT: ${{ toJson(github) }}
+          run: echo "$GITHUB_CONTEXT"
+        - name: commits
+          env:
+           COMMITS: ${{ toJson(github.event.commits) }}
+          run: echo "$COMMITS"
+        - name: commit messages
+          env:
+           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+           CONDITION: ${{ contains(COMMIT_MESSAGES, '#skip')}
+          run: echo "$COMMIT_MESSAGES"
         - name: Install dependencies
           run: npm install
         - name: Check style
@@ -31,7 +44,7 @@ jobs:
         - name: Run Playwright tests
           run: npm run test:e2e
         - name: Trigger deployment
-          if: ${{ github.event_name == 'push' }}
+          if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -42,7 +55,7 @@ jobs:
          with:
             node-version: '20'
        - name: Bump version and push tag
-         if: ${{ github.event_name == 'push' }}
+         if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}
          uses: anothrNick/github-tag-action@1.71.0
          env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
