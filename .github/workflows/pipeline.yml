@@ -48,7 +48,7 @@ jobs:
           with:
       
             severity: info
-            details: Deployments succes!
+            details: Deployment success!
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         - name: Deployment failure
           env:
@@ -60,7 +60,7 @@ jobs:
           with:
       
             severity: info
-            details: Deployments succes!
+            details: Deployment failed!
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           
   tag_release:
