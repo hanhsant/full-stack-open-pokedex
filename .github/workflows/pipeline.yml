@@ -35,8 +35,6 @@ jobs:
            COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
            CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
           if: ${{github.event_name == 'push' && env.CONDITION == 'false'}}
-         
-          
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
           
         - name: Deployment succes
@@ -49,7 +47,10 @@ jobs:
           with:
       
             severity: info
+            text: A new version of Pokedex deployed!
             details: Deployment Succeeded!
+            description: by ${{ github.actor }}
+            username: Pokedex Notify
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         - name: Deployment failure
           env:
@@ -61,7 +62,11 @@ jobs:
           with:
       
             severity: info
+            text: Pokedex deployment failed!
             details: Deployment Failed!
+            description: by ${{ github.actor }}
+            
+            username: Pokedex Notify
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           
   tag_release:
