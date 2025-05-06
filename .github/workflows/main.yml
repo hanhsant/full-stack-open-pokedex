@@ -27,11 +27,15 @@ jobs:
         # String representation of cookie attached to health check request.
         # Format: `Name=Value`
     - name: Discord notification success
+      env:
+            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       if: ${{success()}}
       uses: Ilshidur/action-discord@master
       with:
           args: 'Scheduled healthcheck OK'
     - name: Discord notification failure
+      env:
+            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
       if: ${{failure()}}
       uses: Ilshidur/action-discord@master
