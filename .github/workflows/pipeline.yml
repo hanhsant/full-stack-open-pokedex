@@ -48,22 +48,19 @@ jobs:
           with:
       
             severity: info
-            description: Deployments succes!
-            username: Pokedex Notify
+            details: Deployment success!
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         - name: Deployment failure
           env:
              COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
              CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
-             COMMIT_URL:  ${{ toJson(github.event.commits.url) }}
          
           if: ${{github.event_name == 'push' && env.CONDITION == 'false' && failure()}}
           uses: rjstone/discord-webhook-notify@v1
           with:
       
             severity: info
-            details: "commit $COMMIT_URL failed and broke the build"
-            username: Pokedex Notify
+            details: Deployment failed!
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           
   tag_release:
