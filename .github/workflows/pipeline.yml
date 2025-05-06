@@ -26,7 +26,7 @@ jobs:
         - name: Install dependencies
           run: npm install
         - name: SEE
-          run: echo "$AUTHOR $URL"
+          run: echo "$env.AUTHOR $env.URL"
         - name: Check style
           run: npm run eslint
         - name: Check build
