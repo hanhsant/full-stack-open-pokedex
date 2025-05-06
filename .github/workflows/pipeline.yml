@@ -41,31 +41,28 @@ jobs:
           env:
              COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
              CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+             
           
           if: ${{github.event_name == 'push' && env.CONDITION == 'false' && success()}}
           uses: rjstone/discord-webhook-notify@v1
           with:
       
             severity: info
-            text: 'A new version of Pokedex deployed!'
-            details: 'Deployment Succeeded!'
-            description: 'by ${{ github.actor }}'
+            description: Deployments succes!
             username: Pokedex Notify
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         - name: Deployment failure
           env:
              COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
              CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+             COMMIT_URL:  ${{ toJson(github.event.commits.url) }}
          
           if: ${{github.event_name == 'push' && env.CONDITION == 'false' && failure()}}
           uses: rjstone/discord-webhook-notify@v1
           with:
       
             severity: info
-            text: 'Pokedex deployment failed!'
-            details: 'Deployment Failed!'
-            description: 'by ${{ github.actor }}'
-            
+            details: "commit $COMMIT_URL failed and broke the build"
             username: Pokedex Notify
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           
