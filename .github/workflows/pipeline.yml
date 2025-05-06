@@ -11,11 +11,7 @@ jobs:
   simple_deployment_pipeline:
   
       runs-on: ubuntu-latest
-      env:
       
-       COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-       CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
-       AUTHOR: ${{ toJson(github.event.commits.*.url) }}
        
       steps:
         - uses: actions/checkout@v4
@@ -45,10 +41,36 @@ jobs:
         - name: Run Playwright tests
           run: npm run test:e2e
         - name: Trigger deployment
+          env:
+        
+           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+           CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
 
           if: ${{github.event_name == 'push' && env.CONDITION == 'false'}}
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+        - name: Deployment Success notification
+          env:
           
+             COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+             CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+             
+          uses: rjstone/discord-webhook-notify@v1
+          if: ${{github.event_name == 'push' && env.CONDITION == 'false' && success()}}
+          with:
+              severity: info
+              details: Deployment Succeeded!
+              webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+        - name: Deployment Failure notification
+          env:
+          
+             COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+             CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+          uses: rjstone/discord-webhook-notify@v1
+          if: ${{github.event_name == 'push' && env.CONDITION == 'false' && failure()}}
+          with:
+              severity: error
+              details: Deployment failed!
+              webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           
   tag_release:
     needs: [simple_deployment_pipeline]
