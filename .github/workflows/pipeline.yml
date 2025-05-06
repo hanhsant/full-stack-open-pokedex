@@ -47,9 +47,9 @@ jobs:
           with:
       
             severity: info
-            text: A new version of Pokedex deployed!
-            details: Deployment Succeeded!
-            description: by ${{ github.actor }}
+            text: 'A new version of Pokedex deployed!'
+            details: 'Deployment Succeeded!'
+            description: 'by ${{ github.actor }}'
             username: Pokedex Notify
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         - name: Deployment failure
@@ -62,9 +62,9 @@ jobs:
           with:
       
             severity: info
-            text: Pokedex deployment failed!
-            details: Deployment Failed!
-            description: by ${{ github.actor }}
+            text: 'Pokedex deployment failed!'
+            details: 'Deployment Failed!'
+            description: 'by ${{ github.actor }}'
             
             username: Pokedex Notify
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
