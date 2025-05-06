@@ -14,7 +14,7 @@ jobs:
       env:
        COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
        CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
-       AUTHOR: ${{ toJson(github.event.commits.*url) }}
+       AUTHOR: ${{ toJson(github.event.commits.*.url) }}
        
       steps:
         - uses: actions/checkout@v4
