@@ -14,8 +14,7 @@ jobs:
       env:
        COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
        CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
-       AUTHOR: ${{github.event.actor}}
-       URL : ${{github.event.commits.url}}
+       AUTHOR: ${{ toJson(github.event.commits) }}
        
       steps:
         - uses: actions/checkout@v4
@@ -26,7 +25,7 @@ jobs:
         - name: Install dependencies
           run: npm install
         - name: SEE
-          run: echo "$env.AUTHOR $env.URL"
+          run: echo "$env.AUTHOR"
         - name: Check style
           run: npm run eslint
         - name: Check build
