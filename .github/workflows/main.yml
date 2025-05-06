@@ -36,7 +36,6 @@ jobs:
     - name: Discord notification failure
       env:
             DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-
       if: ${{failure()}}
       uses: Ilshidur/action-discord@master
       with:
