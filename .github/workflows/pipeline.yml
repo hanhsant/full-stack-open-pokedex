@@ -44,8 +44,9 @@ jobs:
           env:
              COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
              CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+          
+          if: ${{github.event_name == 'push' && env.CONDITION == 'false' && success()}}
           uses: rjstone/discord-webhook-notify@v1
-          if: ${{github.event_name == 'push' && env.CONDITION == 'false' && succes()}}
           with:
       
             severity: info
@@ -55,8 +56,9 @@ jobs:
           env:
              COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
              CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
-          uses: rjstone/discord-webhook-notify@v1
+         
           if: ${{github.event_name == 'push' && env.CONDITION == 'false' && failure()}}
+          uses: rjstone/discord-webhook-notify@v1
           with:
       
             severity: info
