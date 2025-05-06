@@ -36,7 +36,33 @@ jobs:
            COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
            CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
           if: ${{github.event_name == 'push' && env.CONDITION == 'false'}}
+         
+          
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+          
+        - name: Deployment succes
+          env:
+             COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+             CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+          uses: rjstone/discord-webhook-notify@v1
+          if: ${{github.event_name == 'push' && env.CONDITION == 'false' && succes()}}
+          with:
+      
+            severity: info
+            details: Deployment Succeeded!
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+        - name: Deployment failure
+          env:
+             COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+             CONDITION: ${{ contains(github.env.COMMIT_MESSAGES, '#skip')}}
+          uses: rjstone/discord-webhook-notify@v1
+          if: ${{github.event_name == 'push' && env.CONDITION == 'false' && failure()}}
+          with:
+      
+            severity: info
+            details: Deployment Failed!
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
